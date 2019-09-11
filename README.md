@@ -1,1 +1,3 @@
-# Lecture2
+# Lecture 2
+
+Introduction To Types.
