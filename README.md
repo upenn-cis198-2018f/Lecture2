@@ -1,3 +1,3 @@
 # Lecture 2
 
-Introduction To Types.
+Types and Expressions in Rust.
