@@ -344,7 +344,9 @@ fn strings() {
     // Uh oh...
     let s3: &str = "This is also a s̴̝͍̥̅̇̌͛̊́͊̾̓̃͆̎̏̔͠tring";
 
-    println!("{} {} {}", s1, s2, s3);
+    println!("{}", s1);
+    println!("{}", s2);
+    println!("{}", s3);
     println!("{} {} {}", s1.len(), s2.len(), s3.len());
 
     // The problem with C style char*:
@@ -369,9 +371,7 @@ fn strings() {
     let poodles = "ಠ_ಠ"; // Pre allocated read-only memory.
 
     // Notice `str` by _itself_ is a type! What does this mean?
-    // let x: Box<str> = noodles.into_boxed_str();
-
-    // Unsized types.
+    // It's called an "unsized type".
     // Why don't languages like Java or Python have this issue?
 
     // String are laid out in pretty much the same way as arrays.
