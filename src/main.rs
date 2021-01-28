@@ -1,74 +1,264 @@
-// Classroom Minutia:
-// Homework 1 is up! Do the first half of homework 1.
-// Clippy and rust fmt.
-// Rust train model.
-// Not only to learn Rust, but understand the design behind Rust.
+/*
+    CIS 198: Rust Programming
 
-// Why does Rust do things this way?
-// How does this related to other languages?
-// What are the tradeoffs?
+    Lecture 2: basic syntax, types, and expressions
 
-// Starting Things.
-// Check out the simple cargo structure for a Rust project.
+    src/main.rs
+*/
 
-// `cargo new lecture2`
+#![allow(dead_code, unused_variables)]
 
-// Usual cargo Rust Project layout.
-// Cargo.toml src/ examples/ tests/
+/*
+    Classroom Stuff
 
-// Check out the Cargo.toml file.
+    - Hopefully you completed Homework 0
+    - Homework 1: posted tomorrow, due before class in 2 weeks.
+    - Piazza email notifications!
+    - Office Hours (see Piazza)
+    - How to earn participation credit (see Piazza)
+*/
+
+/*
+    Tour of Cargo
+
+    Creating a repository:
+    - cargo new or cargo init
+    - Manage with git!
+
+    Building and running:
+    - cargo build
+    - cargo build --release
+    - cargo run
+    - cargo run --release
+    - cargo run --bin <binary name>
+    - cargo run --bin <binary name> --release
+    - cargo test
+    - cargo test --release
+
+    Clippy and rustfmt:
+    - cargo clippy
+    - cargo fmt
+
+    Package dependencies:
+    - Cargo.toml
+    - Cargo.lock
+*/
+
+/*
+    Rust Syntax
+
+    - Often similar to C++
+    - Diverges in some important ways to be more readable / clear
+    - Sometimes similar to functional languages (OCaml)
+
+    Some themes for today:
+
+    1. Explicit is better than implicit
+
+    2. Strong types: every variable has a type
+
+    3. Explicit memory: every variable has a known memory location
+
+    4. Passing by reference
+
+    (Recall: safety and zero-cost abstractions)
+
+*/
+
+/*
+    Main function
+
+    The easiest way to run your program: include a file
+        src/main.rs
+    and a function
+        fn main()
+*/
+fn main() {
+
+    println!("Hello, CIS198!");
+
+    // This is a comment
+    /* This is also a comment */
+
+    machine_types();
+
+    println!("2 + 2 = {}", add_two_integers(2, 2));
+    println!("2 + 3 = {}", add_two_integers(2, 3));
+    println!("2 + -2 = {}", add_two_integers(2, -2));
+
+    // array();
+
+    // slices();
+
+    strings();
+}
+
+/*
+    Basic types and expressions
+*/
 
 // In Rust we specify the types of integers.
 // What are the tradeoffs of using different types?
 // Peformance and memory size.
-#[allow(dead_code, unused_variables)]
 fn machine_types() {
     let n: i8 = 0;
-    let m: i16 = 0;
+    let m: i16 = 1;
     let o: i32 = 0;
+    let p: i8 = 0;
+
+    // Quick debugging tutorial: printing and assertions
+    // What happens if we print these out?
+
+    // println!("n = {}, m = {}, o = {}, p = {}", n, m, o, p);
+
+    // assert!(n == m as i8);
+    // debug_assert!(n == p + 1);
+    // assert_eq!(n, p + 1);
+    // debug_assert_eq!(n, p + 1);
 
     // Different size literals
-    let p = 0i64;
+    let p1 = 0i64;
     let p2 = 0 as i64;
+    let p3 = p2 as i128;
+    let p4 = p3 as i64;
+
     // Unsigned versions.
     let n = 0u32;
+    let m: u128 = 0;
+    // println!("{} {}", n, m);
 
     // Machine dependent types
     let n: isize = 40;
     // Indexer!
-    let i: usize = 40;
+    // let i: usize = 5;
+    let i = 0;
 
     let array: [i32; 3] = [1, 2, 3];
+
+    println!("{}", array[i]);
+    assert_eq!(i, 0 as usize);
 
     // Why do we have specific sizes instead of the C/C++ approach?
     // Implicit sizes are not good enough for systems programming, where the size
     // in bytes matters.
     // https://stackoverflow.com/questions/11438794/is-the-size-of-c-int-2-bytes-or-4-bytes
 
-
     // Why doesn't C specify a size for integers?
 
     // Whats happens if we try to use a non usize for an array index?
     // let i: isize = 1;
-    array[i /*as usize*/];
+    // println!("{}", array[i]);
+    // println!("{}", array[i as usize]);
 
     // Why are array indices usize i.e machine dependent?
     // Same reason C doesn't specify size. To allow flexibility with the machine
     // dependent code.
 
     // Chars and bools are not ints!
-    let b = true;
-    let c = 'c';
+    let b1 = true;
+    let b2: bool = true;
+    let c1 = 'c';
+    let c2: char = 'c';
 
-    // if b /*as i32*/ == 1 {
+    // Why don't we need explicit type annotations
 
-    // }
-    // Use as operator to convert to different types:
+    // Type error
+    // assert_eq!(b1, c1);
 
+    assert_eq!(b1, b2);
+
+    // Pretty printing
+    println!("{} {} {} {}", b1, b2, c1, c2);
+    // Debug printing
+    println!("{:?} {:?} {:?} {:?}", b1, b2, c1, c2);
+
+    // Recall principles:
+    // Explicit is better than implicit!
+    //    --> conversion between types
+    // Strong types
 }
 
-// Arrays and vectors.
-#[allow(dead_code, unused_variables)]
+// Functions
+fn add_two_integers(a: isize, b: isize) -> isize {
+    let result = a + b;
+    return result;
+}
+
+// Mutability
+fn add_two_integers_v2(a: isize, b: isize) -> isize {
+    let mut result = 0;
+    result += a;
+    result += b;
+    return result;
+}
+
+fn add_two_integers_result_by_reference(
+    a: isize,
+    b: isize,
+    result: &mut isize,
+) {
+    *result = 0;
+    *result += a;
+    *result += b;
+}
+
+fn add_two_integers_v3(
+    a: isize,
+    b: isize,
+) -> isize {
+    let result = 0;
+    let mut result = result;
+    add_two_integers_result_by_reference(a, b, &mut result);
+    return result;
+}
+
+// If expressions
+fn absolute_value(a: isize) -> usize {
+    if a > 0 {
+        // return a as usize;
+        a as usize
+    } else {
+        // return -a as usize;
+        -a as usize
+    }
+}
+
+// This time, instead of using main, let's use unit tests.
+#[test]
+fn test_absolute_value() {
+    assert_eq!(absolute_value(0), 0);
+    assert_eq!(absolute_value(3), 3);
+    assert_eq!(absolute_value(-5), 5);
+    assert_eq!(absolute_value(-3 as isize), 3 as usize);
+}
+
+fn absolute_diff(x: isize, y: isize) -> usize {
+    absolute_value(x - y)
+}
+
+// Expressions vs return
+// Ifs are expressions, not statements.
+// What is the difference between an expression and statement?
+fn if_expr(b : bool) {
+    let x: i32 =
+        if b {
+            5
+        } else {
+            10
+        };
+    let y = 3;
+    if b {
+        6
+    } else {
+        11
+    };
+    println!("{}", x);
+}
+
+/*
+    Arrays, vectors, and slices
+*/
+
 fn array() {
     // Size is hardcoded for arrays.
     // There space is allocated directly in the binary.
@@ -77,10 +267,27 @@ fn array() {
     let zeroes = [0; 1000];
     let b: [i32; 3] = [1, 2, 3];
 
+    // Typical example
+    let input_files = ["input/input_1.txt", "input/input_2.txt"];
+
     // Instead, Vectors are dynamically allocated.
     // Talk about heap and stack, and "pointers".
     let mut v: Vec<i32> = vec![1, 2, 3];
+    println!("{:?}", v);
     v.push(3);
+    println!("{:?}", v);
+    v.pop();
+    println!("{:?}", v);
+    v.push(5);
+    println!("{:?}", v);
+    v.push(6);
+    println!("{:?}", v);
+
+    println!("{:?}", a);
+    println!("{:?}", zeroes);
+    println!("{:?}", b);
+    // println!("{:?}", a + a);
+    // a.push(3);
 
     // Rust vectors have their capacity and length fields
     // as part of the vector size, accessing elements requires
@@ -89,8 +296,6 @@ fn array() {
     // How is this different from Objects in other languages?
 }
 
-// Arrays, vectors, and slices.
-#[allow(dead_code, unused_variables)]
 fn slices() {
     let a = [1, 2, 3];
     // Fat pointer: pointer to heap, length, capacity,
@@ -101,8 +306,8 @@ fn slices() {
     // resemble an array.
 
     // Arrays and Vector references kinda have the same memory layout...
-    let sv: &[i32] = &v;
-    let av: &[i32] = &a;
+    let v_slice: &[i32] = &v;
+    let a_slice: &[i32] = &a;
     // So we can take references to both! (There is some automatic conversion from
     // &Vec<i32> to &[i32])...
 
@@ -112,19 +317,36 @@ fn slices() {
     // Accept a vector:
     // Write functions that can take either.
     fn print(s: &[i32]){
-        unimplemented!()
+        println!("{:?}", s);
     }
 
     // Same function prints both arrays and vector references.
-    print(sv);
-    print(av);
-    // Rust knows how to convert vectors to arrays.
+    print(v_slice);
+    print(a_slice);
+    // Rust knows how to convert vectors to slices.
     print(&v);
-    print(&v[0..1]);
+    print(&v[1..2]);
 }
 
-#[allow(dead_code, unused_variables)]
+/*
+    Strings
+
+    Handling of strings is a major security risk!
+    Examples: https://owasp.org/www-project-top-ten/
+    Why are strings so hard to get right?
+*/
+
 fn strings() {
+
+    let s1: &str = "This is a string";
+    let s2: &str = "This is a string with spaghetti 🍝";
+
+    // Uh oh...
+    let s3: &str = "This is also a s̴̝͍̥̅̇̌͛̊́͊̾̓̃͆̎̏̔͠tring";
+
+    println!("{} {} {}", s1, s2, s3);
+    println!("{} {} {}", s1.len(), s2.len(), s3.len());
+
     // The problem with C style char*:
     // Not obvious if it's modifyiable.
 
@@ -141,17 +363,13 @@ fn strings() {
     // UTF-8, growable, modifyiable, guaranteed to be correct UTF-8
     let s: String = "rust".to_string();
 
-    // Example in book
+    // Example from O'Reilly book
     let noodles: String = "noodles".to_string();
     let oodles: &str = &noodles[1..];
     let poodles = "ಠ_ಠ"; // Pre allocated read-only memory.
 
-    fn print(s: &str) {
-
-    }
-
     // Notice `str` by _itself_ is a type! What does this mean?
-    let x: Box<str> = noodles.into_boxed_str();
+    // let x: Box<str> = noodles.into_boxed_str();
 
     // Unsized types.
     // Why don't languages like Java or Python have this issue?
@@ -163,7 +381,6 @@ fn strings() {
     // str ~~ [T]
 }
 
-#[allow(dead_code, unused_variables)]
 fn structured_types() {
     // Tuple
     // How are tuples different than arrays?
@@ -191,7 +408,6 @@ fn structured_types() {
     }
 }
 
-#[allow(dead_code, unused_variables)]
 fn references() {
     // Think of them as C/C++ pointers, but safe!
     // Always refer to valid data.
@@ -220,24 +436,6 @@ fn references() {
     // add1(r);
 }
 
-// Heap allocations.
-#[allow(dead_code, unused_variables)]
-fn boxes() {
-    // Rust puts structures in the stack. No dereference needed!
-    let t = (12, "eggs");
-
-    // VS Java and Python which allocate all non-primitives on the heap.
-    // This incurs a pointer dereference to access all data.
-
-    // When `b` goes of scope, memory is freed (unless moved)
-    let b = Box::new(t);
-
-    // Raw pointers.
-    let x = 3;
-    let raw: *const i32 = &3;
-}
-
-#[allow(dead_code, unused_variables)]
 fn unit_type() -> () {
     //  What is the return type of the print function?
     let r: () = println!("hello");
@@ -245,18 +443,6 @@ fn unit_type() -> () {
     // Type of this function?
     return ();
 }
-
-// ifs are expressions, not statements.
-// What is the difference between an expression and statement?
-fn if_expr(b : bool) {
-    let x: i32 =
-        if b {
-            5
-        } else {
-            10
-        };
-}
-
 
 fn while_loop(b: bool) {
     while b {
@@ -307,7 +493,7 @@ fn function_calls(v: Vec<i32>) {
 
     // Lets see what documentation looks like:
     // https://doc.rust-lang.org/std/collections/struct.HashMap.html
-    use std::collections::HashMap;
+    // use std::collections::HashMap;
 }
 
 // Initial code. Showing all explicit types.
@@ -318,10 +504,9 @@ fn build_vector_rough() -> Vec<i16> {
     v
 }
 
-// Question: Can we omit the type of the function? No
+// Question: Can we omit the type of the function? Answer: No
 
 // Omiting types:
-#[allow(dead_code)]
 fn build_vector() -> Vec<i16> {
     let mut v = Vec::new();
     v.push(10);
@@ -330,36 +515,6 @@ fn build_vector() -> Vec<i16> {
 }
 
 // Final version.
-#[allow(dead_code)]
 fn build_vector_final() -> Vec<i16> {
     vec![10, 20]
-}
-
-// NOTE: Will NOT talk about in class.
-fn reference_dereference(s: &mut String) {
-
-    fn f(i: i32){
-        unimplemented!()
-    }
-
-    let v = vec![0; 10];
-    for i in &v {
-        f(*i);
-    }
-    s.push('c');
-}
-
-fn closure() {
-    // Anonymous functions, capture enviornment.
-    let x = 3;
-    let f = |y| y + 3;
-    assert_eq!(f(5), 8);
-
-    let is_even = |x: i32| -> bool {x % 2 == 0};
-
-    // Type inference.
-    let vec : Vec<i32> = vec![1, 2, 3, 4, 5];
-    let vec2 = vec.into_iter().filter(|x| x % 2 == 0).collect::<Vec<i32>>();
-
-    // let ht: HashMap<i32, i32> = v.clone().into_iter().map(|x| (x, x)).collect();
 }
