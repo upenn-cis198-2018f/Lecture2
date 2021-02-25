@@ -6,7 +6,10 @@
     src/main.rs
 */
 
+// Just for this lecture: allowing warnings, since we wrote a lot of
+// illustrative / playground code
 #![allow(dead_code, unused_variables)]
+#![allow(clippy::unused_unit, clippy::unnecessary_cast, clippy::needless_return)]
 
 /*
     Classroom Stuff
@@ -74,7 +77,6 @@
         fn main()
 */
 fn main() {
-
     println!("Hello, CIS198!");
 
     // This is a comment
@@ -100,6 +102,7 @@ fn main() {
 // In Rust we specify the types of integers.
 // What are the tradeoffs of using different types?
 // Peformance and memory size.
+#[allow(clippy::many_single_char_names)]
 fn machine_types() {
     let n: i8 = 0;
     let m: i16 = 1;
@@ -179,33 +182,26 @@ fn machine_types() {
 }
 
 // Functions
-fn add_two_integers(a: isize, b: isize) -> isize {
+pub fn add_two_integers(a: isize, b: isize) -> isize {
     let result = a + b;
     return result;
 }
 
 // Mutability
-fn add_two_integers_v2(a: isize, b: isize) -> isize {
+pub fn add_two_integers_v2(a: isize, b: isize) -> isize {
     let mut result = 0;
     result += a;
     result += b;
     return result;
 }
 
-fn add_two_integers_result_by_reference(
-    a: isize,
-    b: isize,
-    result: &mut isize,
-) {
+pub fn add_two_integers_result_by_reference(a: isize, b: isize, result: &mut isize) {
     *result = 0;
     *result += a;
     *result += b;
 }
 
-fn add_two_integers_v3(
-    a: isize,
-    b: isize,
-) -> isize {
+pub fn add_two_integers_v3(a: isize, b: isize) -> isize {
     let result = 0;
     let mut result = result;
     add_two_integers_result_by_reference(a, b, &mut result);
@@ -213,7 +209,7 @@ fn add_two_integers_v3(
 }
 
 // If expressions
-fn absolute_value(a: isize) -> usize {
+pub fn absolute_value(a: isize) -> usize {
     if a > 0 {
         // return a as usize;
         a as usize
@@ -225,27 +221,22 @@ fn absolute_value(a: isize) -> usize {
 
 // This time, instead of using main, let's use unit tests.
 #[test]
-fn test_absolute_value() {
+pub fn test_absolute_value() {
     assert_eq!(absolute_value(0), 0);
     assert_eq!(absolute_value(3), 3);
     assert_eq!(absolute_value(-5), 5);
     assert_eq!(absolute_value(-3 as isize), 3 as usize);
 }
 
-fn absolute_diff(x: isize, y: isize) -> usize {
+pub fn absolute_diff(x: isize, y: isize) -> usize {
     absolute_value(x - y)
 }
 
 // Expressions vs return
 // Ifs are expressions, not statements.
 // What is the difference between an expression and statement?
-fn if_expr(b : bool) {
-    let x: i32 =
-        if b {
-            5
-        } else {
-            10
-        };
+pub fn if_expr(b: bool) {
+    let x: i32 = if b { 5 } else { 10 };
     let y = 3;
     if b {
         6
@@ -259,7 +250,7 @@ fn if_expr(b : bool) {
     Arrays, vectors, and slices
 */
 
-fn array() {
+pub fn array() {
     // Size is hardcoded for arrays.
     // There space is allocated directly in the binary.
     // Probably in the .data or .rodata sections of an ELF file.
@@ -296,7 +287,7 @@ fn array() {
     // How is this different from Objects in other languages?
 }
 
-fn slices() {
+pub fn slices() {
     let a = [1, 2, 3];
     // Fat pointer: pointer to heap, length, capacity,
     let v = vec![1, 2, 3];
@@ -316,7 +307,7 @@ fn slices() {
 
     // Accept a vector:
     // Write functions that can take either.
-    fn print(s: &[i32]){
+    fn print(s: &[i32]) {
         println!("{:?}", s);
     }
 
@@ -336,8 +327,7 @@ fn slices() {
     Why are strings so hard to get right?
 */
 
-fn strings() {
-
+pub fn strings() {
     let s1: &str = "This is a string";
     let s2: &str = "This is a string with spaghetti 🍝";
 
@@ -381,7 +371,7 @@ fn strings() {
     // str ~~ [T]
 }
 
-fn structured_types() {
+pub fn structured_types() {
     // Tuple
     // How are tuples different than arrays?
     // - Heterogenous Data
@@ -408,7 +398,7 @@ fn structured_types() {
     }
 }
 
-fn references() {
+pub fn references() {
     // Think of them as C/C++ pointers, but safe!
     // Always refer to valid data.
 
@@ -436,7 +426,10 @@ fn references() {
     // add1(r);
 }
 
-fn unit_type() -> () {
+pub fn unit_type() {
+    // Implicitly this is the same as:
+    // pub fn unit_type() -> ()
+
     //  What is the return type of the print function?
     let r: () = println!("hello");
 
@@ -444,17 +437,19 @@ fn unit_type() -> () {
     return ();
 }
 
-fn while_loop(b: bool) {
+#[allow(clippy::while_immutable_condition)]
+pub fn while_loop(b: bool) {
     while b {
         unimplemented!()
     }
 
     loop {
+        println!("Infinite Loop");
         // Do things.
     }
 }
 
-fn for_loop() {
+pub fn for_loop() {
     // Using ranges, exclusive
     for i in 0..20 {
         println!("{}", i);
@@ -479,12 +474,13 @@ fn for_loop() {
     // the iteration code itself.
 }
 
-fn function_calls(v: Vec<i32>) {
+pub fn function_calls(v: Vec<i32>) {
     // Types can have methods:
     let v2 = v.clone();
     // Or associated functions.
     let mut v3: Vec<i32> = Vec::new();
     v3.push(4);
+    println!("{:?}, {:?}", v, v3);
 
     // If compiler cannot infer the type of a generic function, turbofish
     // syntax may be required:
@@ -497,7 +493,7 @@ fn function_calls(v: Vec<i32>) {
 }
 
 // Initial code. Showing all explicit types.
-fn build_vector_rough() -> Vec<i16> {
+pub fn build_vector_rough() -> Vec<i16> {
     let mut v: Vec<i16> = Vec::<i16>::new();
     v.push(10i16);
     v.push(20i16);
@@ -507,7 +503,7 @@ fn build_vector_rough() -> Vec<i16> {
 // Question: Can we omit the type of the function? Answer: No
 
 // Omiting types:
-fn build_vector() -> Vec<i16> {
+pub fn build_vector() -> Vec<i16> {
     let mut v = Vec::new();
     v.push(10);
     v.push(20);
@@ -515,6 +511,6 @@ fn build_vector() -> Vec<i16> {
 }
 
 // Final version.
-fn build_vector_final() -> Vec<i16> {
+pub fn build_vector_final() -> Vec<i16> {
     vec![10, 20]
 }
